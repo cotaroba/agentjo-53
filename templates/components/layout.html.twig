@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% set contact_info %}
+    <div class="sidebar-top mx-0">
+        <dl class="">
+            <dt>Email:</dt>
+            <dd><a href="mailto:jo@agentjo.com">jo@agentjo.com</a></dd>
+            <dt>Cell:</dt>
+            <dd>816.259.LIST</dd>
+        </dl>
+    </div>
+    <div class="sidebar-bottom mx-0">
+        {% include 'components/about.html.twig' %}
+    </div>
+{% endset %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                {% block flashMesageBlock %}
+                    {% for flashMessage in app.session.flashbag.get('success') %}<p
+                            class="small alert alert-success mb-1 mt-1 pl-2 pt-0 pb-0" style="padding: 0 0;"
+                            role="alert">{{ flashMessage }}</p>{% endfor %}
+                    {% for flashMessage in app.session.flashbag.get('error') %}<p
+                            class="small alert alert-danger mb-1 mt-1 pl-2 pt-0 pb-0"
+                            role="alert">{{ flashMessage }}</p>{% endfor %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="agentjo">
+                    <img src="{{ asset('img/agentjoLogoLeftPic140x310.png') }}" width="310" height="140" alt="Agent Jo Logo">
+                </div>
+
+            {% block menucontent %}
+                <div class="pt-0 pb-2">{% include 'components/menu.html.twig' %}</div>
+            {% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2 d-none d-lg-block">
+                {{ contact_info }}
+            </div>
+
+            <div class="col-auto col-lg-10"><!--main content block -->
+                {% block maincontent %}{% endblock %}
+                <div class="d-xs-block d-lg-none mt-5">
+                    {{ contact_info }}
+                </div>
+                <div class="mt-5">{% block footer %}{% endblock %}<p class="text-center small">Copyright &copy; {{ "now"|date("Y") }} ELITE Realty.</p></div>
+            </div>
+        </div> <!--main row-->
+    </div>
+{% endblock %}

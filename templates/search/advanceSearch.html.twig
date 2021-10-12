@@ -1,0 +1,207 @@
+{% extends 'components/layout.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block maincontent %}
+    <div class="container">
+        <h4 class="text-center">Search Properties</h4>
+        <span id="searchTerm"></span><br><span id="count"></span>
+        <form name="advance_search" class="form-compact">
+            <div class="mt-2 mb-2 pt-0 pb-0">
+                <button type="button" class="btn btn-sm btn-primary mt-2 mb-2" id="advance_search_search" name="advance_search[search]">View Search Results</button>
+                <button type="button" class="btn btn-sm btn-secondary mt-2 mb-2" id="advance_search_clear" name="advance_search[clear]">Clear Search</button>
+            </div>
+            <div id="formElements" data-path="{{ path('searchAPI',{'odata': '$'}) }}" data-search="{{ path('searchResults')}}" data-clear="{{ path('clearSearch') }}">
+                <div class="row">
+                    <div class="col-md-6" id="dropdown-1">
+                        <div class="form-group">
+                            <div><label class="control-label small m-0" for="advance_search_mlsnumber">MLS # or Address</label>
+                                <input class="form-control" type="search" id="advance_search_mlsnumber" name="advance_search[mlsnumber]" /></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="dropdown-2">
+                        <div class="form-group">
+                            <div><label class="control-label small m-0" for="advance_search_maxprice">Maximum Price</label><select class="form-control"
+                                        id="advance_search_maxprice" name="advance_search[maxprice]">
+                                    <option value=""></option>
+                                    <option value="50000">$50,000</option>
+                                    <option value="100000">$100,000</option>
+                                    <option value="150000">$150,000</option>
+                                    <option value="200000">$200,000</option>
+                                    <option value="250000">$250,000</option>
+                                    <option value="300000">$300,000</option>
+                                    <option value="400000">$400,000</option>
+                                    <option value="500000">$500,000</option>
+                                    <option value="750000">$750,000</option>
+                                    <option value="1000000">$1,000,000</option>
+                                    <option value="2000000">$2,000,000</option>
+                                    <option value="10000000">$10,000,000</option>
+                                </select></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mt-4 mb-0">
+                    <label for="advance_search_photosOnly">Only show listings with photos?</label>
+                    <input type="checkbox" id="advance_search_photosOnly" name="advance_search[photosOnly]" value="1"/>
+                </div>
+                <div class="form-group mt-0 mb-0">
+                    <label for="advance_search_focus">Only show listings in <span id="focus_area"></span>?</label>
+                    <input type="checkbox" id="advance_search_focus" name="advance_search[focus]" value="1"/>
+                </div>
+            </div>
+            <div class="mt-0 mb-2 pt-0 pb-0">
+                <button type="button" class="btn btn-sm btn-primary mt-2 mb-2" id="advance_search_search-bot" name="advance_search[search]">View Search Results</button>
+                <button type="button" class="btn btn-sm btn-secondary mt-2 mb-2" id="advance_search_clear-bot" name="advance_search[clear]">Clear Search</button>
+            </div>
+        </form>
+        <p id="count-bottom"></p>
+    </div>
+
+
+    <script>
+        let debug = true;
+        const num = new Intl.NumberFormat('en-US');
+        let d = document.getElementById("formElements").dataset;
+        let apiURL = d.path;
+        let searchResultsURL = d.search;
+        let clearURL = d.clear;
+        initDropdown(apiURL);
+
+
+        async function getDropdown(apiURL,g){
+            let a = buildQuery(g);
+            let response = await fetchData(apiURL + "filter=" + a);
+            if (debug) {console.log("Search=",response['search']);}
+            updateDOM(response);
+        }
+
+        async function initDropdown(apiURL){
+            let response = await fetchData(apiURL+"init");
+            if (debug) {console.log("Search=",response['search']);}
+            await buildDropdown(response);
+            updateDOM(response);
+            let g = document.querySelectorAll("#formElements select,#formElements input");
+            if (debug){console.log("g",g);}
+            g.forEach((val)=>{
+                val.addEventListener("change",function() { getDropdown(apiURL,g) });
+                val.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") { e.preventDefault(); e.target.blur(); } });
+            })
+            document.getElementById("focus_area").innerHTML=response['focus']['name'];
+            document.getElementById("advance_search_search").addEventListener("click",function(){window.location.replace(searchResultsURL)});
+            document.getElementById("advance_search_clear").addEventListener("click",function(){window.location.replace(clearURL)});
+            document.getElementById("advance_search_search-bot").addEventListener("click",function(){window.location.replace(searchResultsURL)});
+            document.getElementById("advance_search_clear-bot").addEventListener("click",function(){window.location.replace(clearURL)});
+        }
+
+        async function clearSearch(apiURL){
+            let response = await fetchData(apiURL+"clear");
+            updateDOM(response);
+        }
+
+        async function buildDropdown(response){
+            let dropdown = response['dropdownList'];
+            let keys = Object.keys(dropdown);
+            let i = 1;
+            let k = 1;
+            keys.forEach ((val)=>{
+                console.log("name,title",val,dropdown[val]);
+                let formGroup = buildDiv(val,dropdown[val])
+                let divName = "dropdown-" + k;
+                document.getElementById(divName).append(formGroup);
+                i++;
+                if (i > Math.ceil(keys.length/2)){ k = 2}
+                console.log("i,k,divName",i,k,divName,formGroup)
+            })
+        }
+
+        function buildDiv(name,title){
+            let divFormGroup = document.createElement("div");
+            divFormGroup.classList.add("form-group");
+            let divFormElem = document.createElement("div");
+            let label = document.createElement("label");
+            label.classList.add("control-label","small","m-0");
+            label.htmlFor="advance_search_"+name;
+            label.innerHTML=title;
+            divFormElem.append(label);
+            let select = document.createElement("select");
+            select.classList.add("form-control");
+            select.id="advance_search_"+name;
+            select.name="advance_search["+name+"]";
+            divFormElem.append(select);
+            divFormGroup.append(divFormElem);
+            return divFormGroup;
+        }
+
+        function updateDOM(response){
+            let searchTerm = response['searchTerm'];
+            let dropdown = response['dropdown'];
+            let count = response['count'];
+            let search = Object.keys(response['search']);
+            let PropertyText = (count == 1) ? " Property " : " Properties ";
+            (searchTerm === false) ? document.getElementById("searchTerm").innerHTML = "" : document.getElementById("searchTerm").innerHTML = "Search Results for: " + searchTerm;
+            let countText = num.format(count) + PropertyText + "Found";
+            document.getElementById("count").innerHTML = countText;
+            document.getElementById("count-bottom").innerHTML = countText;
+            let keys = Object.keys(dropdown);
+            keys.forEach((val)=>{
+                let id = "advance_search_" + val;
+                document.getElementById(id).innerHTML = setOptions(val,dropdown[val],response['search']);
+            })
+            search.forEach((val)=>{
+                let id = "advance_search_" + val;
+                let el = document.getElementById(id)
+                console.log("id,el",id,el)
+                if (val === "photosOnly" || val === "focus"){
+                    el.checked = true;
+                } else {
+                    if (keys.includes(val)) {
+                        el.value = response['search'][val];
+                    }
+                }
+            })
+        }
+
+        function setOptions(cat,list,select){
+            let o = Object.keys(list);
+            let s = Object.keys(select);
+            let selYN = s.includes(cat);
+            let opt = "<option value></option>";
+            if (debug) { console.log("setOptions list",list); }
+            o.forEach((val)=>{
+                opt += "<option value=\""+val+"\">"+val+"</option>";
+            })
+            return opt;
+        }
+
+        function buildQuery(g) {
+            let q = "";
+            g.forEach((val)=>{
+                if (val.value !== "") {
+                    let sA = val.id.split("_");
+                    let k = sA[2];
+                    if (k === "photosOnly" || k === "focus") {
+                        if (val.checked === true) {  q += k + " eq " + true + " and "; }
+                    } else {
+                        q += k + " eq " + val.value + " and ";
+                    }
+                }
+            })
+            return q.substring(0, q.length - 5);
+        }
+
+        async function fetchData(URL){
+            let apiHeaders = new Headers();
+            apiHeaders.append('accept', 'application/json;odata=verbose');
+            const response = await fetch(URL, {headers: apiHeaders});
+            if (response.ok === false) {
+                error={functionCalled: "fetchData", message: response};
+                if (debug) {console.log("fetchData... NOT OK; Response = ", response);}
+                return false;
+            }
+            const data = await response.json();
+            if (debug) {console.log("fetchData... DATA =  ", data);}
+            return data;
+        }
+    </script>
+{% endblock %}

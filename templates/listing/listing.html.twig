@@ -1,0 +1,353 @@
+{% extends 'components/layout.html.twig' %}
+
+{%  block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/splide.min.css') }}">
+    <style>
+        #map {
+            height: 320px;  /* The height is 400 pixels */
+            max-width: 100%;  /* The width is the width of the web page */
+            display: none;
+        }
+
+        .carousel-text{
+            text-shadow: 1px 1px 2px #000,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+        }
+
+        .carousel-num {
+            position: absolute;
+            top: 2%;
+            right: 2%;
+            padding-top: 0;
+            color: #fff;
+            text-align: right;
+        }
+
+        .carousel-caption {
+            padding-bottom: 0;
+            bottom: 0;
+        }
+
+        .mls-img {
+            height: 240px;
+            object-fit: scale-down;
+        }
+        @media (min-width: 768px) {
+            .mls-img{
+                height: 280px;
+            }
+        }
+        @media (min-width: 992px) {
+            .mls-img{
+                height: 320px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .mls-img{
+                height: 380px;
+            }
+        }
+
+
+
+</style>
+    <!-- include this after removing jquery 'mortgage/mortgage.calculator.js.html.twig' -->
+{% endblock %}
+
+
+
+{% block maincontent %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-7">
+            <h4>
+                {{ listing.addressfull }}, {{ listing.City }}, {{ listing.StateOrProvince }}  {{ listing.PostalCode }}</h4>
+            <div class="listing-stats text-nowrap">
+                <ul class="small px-0">
+                    {% if listing.BedroomsTotal is defined %}
+                        &nbsp;
+                        <li>{{ listing.BedroomsTotal }}<span>Beds</span></li>&nbsp;&nbsp;
+                    {% endif %}
+
+                    {% if listing.BathroomsFull is defined %}
+                        <li>{{ listing.BathroomsFull }}<span>
+                                {% if listing.BathroomsFull == 1 %}
+                                    Bath
+                                {% else %}
+                                    Baths
+                                {% endif %}</span></li>
+                    {% endif %}
+
+                    {% if listing.BathroomsHalf is defined %}
+                        &nbsp;
+                        <li>{{ listing.BathroomsHalf}}<span>&#189;
+                                {% if listing.BathroomsHalf == 1 %}
+                                    Bath
+                                {% else %}
+                                    Baths
+                                {% endif %}</span></li>
+                    {% endif %}
+
+                    {% if listing.LivingArea is defined %}
+                        &nbsp;
+                        <li>{{ listing.LivingArea | number_format(0, '.') }}<span>Sq Ft</span></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+        <div class="col-12 col-md-5">
+            <div class="row float-md-end">
+                <div class="d-none d-md-block col-md-4 text-center">
+                    <div>
+                        <a href="#mortgageCalculator" data-bs-toggle="modal">
+                            <i class="fs-3 bi-calculator"></i>
+                        </a>
+                    </div>
+                    <div style="font-size: .75em;">Mortgage Calculator</div>
+                </div>
+                <div class="col-12 col-md-8 text-right">
+                    <h4>${{ listing.mortgage.listprice|number_format(0, '.', ',') }}<br>
+                        <span class="fs-6 fst-italic text-muted">
+                            &nbsp;est. ${{ (listing.mortgage.monthlyPayment | round(0, 'ceil'))|number_format(0,'.',',') }}/mo
+                        </span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div><!-- row -->
+
+    <div class="row">
+        {% if (listing.PhotosCount is defined) and (listing.PhotosCount > 0) %}
+        <div class="col-12 col-md-6">
+            <div class="splide">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        {% for media in listing.Media %}
+                        <li class="splide__slide">
+                                <img class="d-block m-auto mls-img"
+                                     src="{{ asset('img/mlsgrid/') }}{{ listing.ListingId }}/{{ "%03d"|format(media.Order) }}.jpg"
+                                     alt="">
+                            {% if media.LongDescription is defined %}
+                                <div class="carousel-caption carousel-text d-block d-md-block">
+                                <p>{{ media.LongDescription }}</p>
+                                </div>{% endif %}
+                            {% set picNum = media.Order + 1 %}
+                            <p class="carousel-num carousel-text">{{ picNum }} of {{ listing.PhotosCount }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="col-12 col-md-6">
+            <p class="fs-5 lh-sm">{% if listing.PublicRemarks is defined %}{{ listing.PublicRemarks }}{% endif %}</p>
+        </div>
+    </div>
+
+    <div class="row map-box">
+        <div class="col-12 col-md-4 ">
+            <div id="map"></div>
+        </div>
+        <div class="col-12 col-md-4">
+            <dl>
+                {% if listing.Directions is defined %}
+                    <dt>Directions</dt>
+                    <dd>{{ listing.Directions }}</dd>
+                {% endif %}
+                {% if listing.SubdivisionName is defined %}
+                    <dt> Subdivision</dt>
+                    <dd>{{ listing.SubdivisionName }}</dd>
+                {% endif %}
+                <dt>City</dt>
+                <dd>{{ listing.City }}</dd>
+                <dt>County</dt>
+                <dd>{{ listing.CountyOrParish }}</dd>
+            </dl>
+        </div>
+        <div class="col-12 col-md-4">
+            <dl>
+                <dt>Property Type</dt>
+                    <dd>{{ listing.PropertyType }}{% if listing.PropertySubType is defined %} / {{ listing.PropertySubType }}{% endif %}</dd>
+                <dt>Listing Updated</dt>
+                    <dd>{{ listing.ModificationTimestamp | date('M d, Y \\a\\t g:ma') }}</dd>
+                    <dt>MLS Number</dt>
+                    <dd>{{ listing.ListingId | slice(3) }}</dd>
+                {% if listing.HMS_TaxTotalAmount is defined %}
+                <dt>Property Tax</dt>
+                    <dd>${{ listing.HMS_TaxTotalAmount|number_format(0, '.', ',') }}</dd>
+                {% endif %}
+                {% if listing.Zoning is defined %}
+                    <dt>Zoning</dt>
+                    <dd>${{ listing.Zoning }}</dd>
+                {% endif %}
+                {% if listing.AssociationYN is defined %}
+                    <dt>Home Owners Association</dt>
+                    <dd>
+                    {% if listing.AssociationYN == true %}
+                    Yes
+                        {% if listing.AssociationName is defined %}
+                         - {{ listing.AssociationName }}
+                        {% endif %}
+                    {% else %}
+                        No
+                    {% endif %}
+                    </dd>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4 g-3" id="propertyDetails">
+
+        </div>
+
+
+    </div>
+
+{% include 'mortgage/mortgage.calculator.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    <div class="card mb-0 pb-0">
+    <div class="card-footer mt-0 linespace-1 small text-center text-muted">
+    Listing provided by {{ listing.ListAgentFullName }}<br>{{ listing.ListOfficeName }}
+    </div>
+    </div>
+    {% include 'components/hmls.footer.html.twig' %}
+    {% endblock %}
+{% block javascripts %}
+    {% include 'mortgage/mortgage.calculator.js.html.twig' %}
+    <script src="{{ asset('js/splide.js') }}"></script>
+    <script>
+        document.addEventListener( 'DOMContentLoaded', function() {
+            var splide = new Splide( '.splide' ,{
+                type: 'loop',
+                perPage: 1,
+                autoplay: true,
+                pagination: false,
+                waitForTransition: true,
+                wheel: true,
+                padding: { top: 0}
+            });
+            splide.mount();
+        } );
+        function initMap() {
+            if (listing.geodata !== null) {
+                var mapBlock = document.getElementById('map');
+                mapBlock.style.display="block";
+                var home = listing.geodata.geometry.location;
+                var map = new google.maps.Map(mapBlock, {
+                    zoom: 16,
+                    center: home
+                });
+                var marker = new google.maps.Marker({
+                    position: home,
+                    map: map,
+                    title: listing.geodata.formatted_address,
+                });
+            }
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ listing.apiKey }}&callback=initMap"></script>
+    <script>
+        let listing = JSON.parse("{{ list | e('js')}}");
+        let mapping = listing['mapping'];
+        let mappingPriority = Object.keys(mapping);
+        let listingKeys = Object.keys(listing);
+        mappingPriority.forEach((val)=>{
+            displaySection(mapping[val],val);
+        });
+
+        function displaySection(mappingObj,sectionName){
+            let display = false;
+            let section = "";
+            switch (sectionName) {
+                case "PropertyRooms":
+                    sectionName = "Room Details";
+                    if (listingKeys.includes("PropertyRooms")) {
+                        display = true;
+                        section += getPropertyRooms();
+                    }
+                    break;
+                case "HOA":
+                    if (listingKeys.includes("AssociationYN")) {
+                        if (listing['AssociationYN'] === false) { break; }
+                    }
+                default:
+                    mappingArr = Object.entries(mappingObj)
+                    mappingArr.forEach((val) => {
+                        if (listingKeys.includes(val[0])) {
+                            display = true;
+                            section += getSection(val)
+                        }
+                    });
+            }
+             if (display){
+                displayDetails(sectionName,section);
+            }
+        }
+
+        function displayDetails(sectionName,section){
+            let colDiv = document.createElement("div");
+            colDiv.classList.add("col");
+            let sectionDiv = document.createElement("div");
+            sectionDiv.classList.add("card","mt-2","h-100");
+            let sectionHeader = document.createElement("div");
+            sectionHeader.classList.add("card-header","text-white","bg-primary");
+            sectionHeader.innerHTML="<strong>"+sectionName+"</strong>";
+            sectionDiv.append(sectionHeader);
+            let subSection = document.createElement("div");
+            subSection.classList.add("card-body","small","bg-light");
+            subSection.innerHTML=section;
+            sectionDiv.append(subSection);
+            colDiv.append(sectionDiv)
+            document.getElementById("propertyDetails").append(colDiv);
+        }
+
+        function getSection(val){
+            const usd = new Intl.NumberFormat('en-US',{ style: 'currency', currency: 'USD',minimumFractionDigits: 0 });
+            const num = new Intl.NumberFormat('en-US');
+            let section = "";
+            if (Array.isArray(val[1])){
+                let formVal;
+                switch (val[1][1]){
+                    case "USD": formVal = usd.format(listing[val[0]]); break;
+                    case "NUM": formVal = num.format(listing[val[0]]); break;
+                    default : formval = listing[val[0]];
+                }
+                section += "<dt>"+val[1][0]+"</dt><dd>"+formVal+"</dd>";
+            } else {
+                let listVal = listing[val[0]]
+                if (typeof listVal === 'string' || listVal instanceof String) { listVal = listVal.replaceAll(",",", "); }
+                section += "<dt>" + val[1] + "</dt><dd>" + listVal + "</dd>";
+            }
+            return section;
+        }
+
+        function getPropertyRooms(){
+            let section = "";
+            listing["PropertyRooms"].forEach((val)=>{
+                let level = "";
+                let dimensions = "";
+                let features = "";
+                let roomKeys = Object.keys(val);
+                if (roomKeys.includes("RoomLevel")){ level = val["RoomLevel"]+" Level";}
+                if (roomKeys.includes("RoomWidth")){ dimensions = ", "+val["RoomWidth"]+"' x "+val["RoomLength"]+ "'";}
+                if (roomKeys.includes("RoomFeatures")){
+                    features = ", "+val["RoomFeatures"];
+                    if (typeof features === 'string' || features instanceof String) { features = features.replaceAll(",",", "); }
+                }
+                propertyRoom = "<dd>"+level+dimensions+features+"</dd>";
+                section += "<dt>"+val["RoomType"]+"</dt>"+propertyRoom;
+            })
+            return section;
+        }
+    </script>
+{% endblock %}
+

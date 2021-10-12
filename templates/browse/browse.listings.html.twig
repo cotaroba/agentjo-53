@@ -1,0 +1,86 @@
+{% block listings %}
+    <div class="card h-100">
+        <div class="card-header bg-white">
+            <div class="row">
+                <div class="col">
+                    <h5 class="mb-0 pb-0">${{ listing.listprice|number_format(0, '.', ',') }}</h5>
+                </div>
+                <div class="col">
+                    <div class="float-end small text-muted"><em>est.
+                            ${{ (attribute(mortgage, listing.mlsnumber).monthlyPayment | round (0, "ceil"))|number_format(0,".",",") }}/mo</em></div>
+                </div>
+            </div>
+        </div>
+        <div class="listing-photo thumbnail bg-light" style="height: 280px; border: 1px solid #E0E0E0;">
+            <a href="{{ path('mlsDisplay', {'mlsnumber':listing.mlsnumber}) }}">
+                {% if attribute(thumbnail, listing.mlsnumber) %}
+                    <span style=""><i class="bi bi-camera"></i>&nbsp;&nbsp;{{ listing.photocount }}</span>
+                    <img class="card-img-top" style="height: 280px; object-fit: cover;"
+                         src="{{ asset(attribute(thumbnail, listing.mlsnumber)) }}"
+                         alt="Listing Photo MLS #{{ listing.mlsnumber }}"/>
+                {% else %}
+                    <span style=""><i class="bi bi-camera"></i>&nbsp;&nbsp;{{ listing.photocount }}</span>
+                {% endif %}
+            </a>
+        </div>
+        <div class="card-body">
+            <h5 class="mb-0 mt-2">
+                <a href="{{ path('mlsDisplay', {'mlsnumber':listing.mlsnumber}) }}">{{ listing.addressfull }}</a>
+            </h5><h6>{{ listing.city }}, {{ listing.state }}  {{ listing.zip }}</h6>
+
+            {% if listing.propertytype == 'Residential' %}
+                <div class="listing-stats text-nowrap">
+                    <ul class="small px-0">
+                        {% if listing.bedrooms %}
+                            &nbsp;
+                            <li>{{ listing.bedrooms }}<span>Beds</span></li>&nbsp;&nbsp;
+                        {% endif %}
+
+                        {% if listing.bathsfull %}
+                            <li>{{ listing.bathsfull }}<span>
+                                {% if listing.bathsfull == 1 %}
+                                    Bath
+                                {% else %}
+                                    Baths
+                                {% endif %}</span></li>
+                        {% endif %}
+
+                        {% if listing.bathshalf %}
+                            &nbsp;
+                            <li>{{ listing.bathshalf }}<span>&#189;
+                                {% if listing.bathshalf == 1 %}
+                                    Bath
+                                {% else %}
+                                    Baths
+                                {% endif %}</span></li>
+                        {% endif %}
+
+                        {% if listing.totalsqft > 0 %}
+                            &nbsp;
+                            <li>{{ listing.totalsqft|number_format(0, '.') }}<span>Sq Ft</span></li>
+                        {% endif %}
+
+                        {% if listing.lotacres is defined %}
+                            {% if listing.lotacres > 0 %}
+                                &nbsp;
+                                <li>{{ listing.lotacres }}<span>Acres</span></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+            {% else %}
+                <p class="small">
+                    <strong>{{ listing.propertytype }}</strong><br><span
+                            style="display: block;font-weight: 300">Property Type</span></p>
+            {% endif %}
+
+            <p class="small">{{ listing.comments | u.truncate(120, '...', false) }} [&nbsp;<a
+                            href="{{ path('mlsDisplay', {'mlsnumber':listing.mlsnumber}) }}">Click&nbsp;for&nbsp;Details</a>&nbsp;]</p>
+
+        </div>
+        <div class="card-footer mt-0 text-muted text-center" style="font-size: .7em;">
+            Listing provided by {{ listing.agentname }}<br>{{ listing.officename }}
+        </div>
+    </div>
+
+{% endblock %}

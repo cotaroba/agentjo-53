@@ -4,6 +4,247 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    Search:
+        Dropdown:
+            subdivision: "Subdivision"
+            city: "City"
+            county: "County"
+            state: "State"
+            propertytype: "Property Type"
+            bookingsection: "Property Sub-Type"
+            schoolsdistrict: "School District"
+            elementaryschool: "Elementary School"
+            middleschool: "Middle School"
+            highschool: "High School"
+            bedrooms: "Bedrooms"
+            bathsfull: "Full Bathrooms"
+        Office:
+            id: "HMSELTE"
+            name: "ELITE Realty"
+        Focus:
+            name: "NW Missouri"
+            counties: ["Buchanan","Andrew","Dekalb","Clinton","Platte","Clay"]
+    Property:
+        Interior:
+            HMS_FloorPlanFeatures: "Floor Plan"
+            InteriorFeatures: "Features"
+            Appliances: "Appliances"
+            OtherEquipment: "Other Equipment"
+            SecurityFeatures: "Security"
+            Basement: "Basement"
+            FireplaceFeatures: "Fireplace"
+            FireplacesTotal: "Fireplaces (Total)"
+            Flooring: "Flooring"
+            Furnished: "Furnished"
+            HMS_DiningAreaFeatures: "Dining Area"
+            HMS_OtherRoomFeatures: "Other Rooms"
+            LaundryFeatures: "Laundry"
+        PropertyRooms:
+            PropertyRooms: "Room Details"
+        Exterior:
+            ExteriorFeatures: "Features"
+            GarageSpaces: "Garage Spaces"
+            ParkingFeatures: "Parking Features"
+            Fencing: "Fencing"
+            HMS_NumberOfDriveInDoors: "Drive-In Doors"
+            ParkingTotal: "Parking Total"
+            PatioAndPorchFeatures: "Patio & Porch"
+            Roof: "Roof"
+            WindowFeatures: "Windows"
+            HMS_LakeDescription: "Lake"
+            HMS_NumberOfDocks: "Number of Docks"
+            HMS_AgricultureType: "Architecture Type"
+            PoolFeatures: "Pool"
+        Lot:
+            LotFeatures: "Lot Features"
+            LotSizeArea: [ "Lot Size","NUM" ]
+            LotSizeUnits: "Lot Size Units"
+            LotSizeSquareFeet: [ "Lot Sq Ft","NUM" ]
+            LotSizeDimensions: "Lot Dimensions"
+            RoadFrontageType: "Road Type"
+            RoadResponsibility: "Road Responsibility"
+            RoadSurfaceType: "Road Surface"
+        Structure:
+            StoriesTotal: "Stories (Total)"
+            YearBuilt: "Year Built"
+            YearBuiltDetails: "Year Built Details"
+            YearBuiltEffective: "Year Built Effective"
+            YearBuiltSource: "Year Built Source"
+            HMS_AgeDescription: "Age Description"
+            ArchitecturalStyle: "Architecture"
+            AboveGradeFinishedArea: [ "Above-grade Finished Area","NUM" ]
+            AboveGradeFinishedAreaUnits: "Above-grade Finished Area Units"
+            BelowGradeFinishedArea: [ "Below-grade Finished Area","NUM" ]
+            BelowGradeFinishedAreaUnits: "Below-grade Finished Area Units"
+            AccessibilityFeatures: "Accessiblity"
+            DirectionFaces: "Direction Faces"
+            OtherStructures: "Other Structures"
+            PropertyCondition: "Condition"
+        Construction:
+            BuilderModel: "Model"
+            BuilderName: "Builder"
+            ConstructionMaterials: "Construction Materials"
+            GreenBuildingVerificationType: "Green Building Verification"
+            GreenEnergyEfficient: "Green Energy Efficient"
+            GreenEnergyGeneration: "Green Energy Generation"
+            GreenIndoorAirQuality: "Green Indoor Air Quality"
+            GreenSustainability: "Green Sustainability"
+            GreenWaterConservation: "Green Water Conservation"
+            HMS_EstimatedCompletionDays: "Estimated Completion (days)"
+            HMS_GreenFeatures: "Green Features"
+            HMS_InstallationRFactorCeiling: "Ceiling R-Factor"
+            HMS_InstallationRFactorOther: "Other R-Factor"
+            HMS_InstallationRFactorWall: "Wall R-Factor"
+        Utilities:
+            Cooling: "Cooling"
+            Heating: "Heating"
+            HMS_Telecom: "Telecom"
+            NumberOfSeparateGasMeters: "Gas Meters"
+            NumberOfSeparateWaterMeters: "Water Meters"
+            Sewer: "Sewer"
+            Utilities: "Utilities"
+            WaterSource: "Water Source"
+        Listing:
+            DocumentsAvailable: "Documents"
+            Exclusions: "Exclusions"
+            HMS_Restrictions: "Restrictions"
+            HMS_HomeWarrantyCompany: "Home Warranty Company"
+            HMS_HomeWarrantyCost: ["Home Warranty Cost","USD"]
+            HMS_HomeWarrantyDeductable: ["Home Warranty Deductable","USD"]
+            ListingTerms: "Listing Terms"
+            Possession: "Possession"
+            SpecialListingConditions: "Special Listing Conditions"
+            #VirtualTourURLBranded: "Virtual Tour URL"
+            #VirtualTourURLUnbranded: "Virtual Tour URL"
+        Financial:
+            BusinessType: "Business"
+            ExistingLeaseType: "Existing Lease"
+            HMS_CurrentOccupancyRate: "Occupancy Rate"
+            HMS_KickOutHourDay: "Kick-out Day"
+            HMS_KickOutTime: "Kick-out Time"
+            HMS_MaintenanceDescription: "Maintenance"
+            HMS_MoveInDate: "Move-in Date"
+            HMS_OccupancyDescription: "Occupancy"
+            HMS_Package: "Package"
+            HMS_PetDeposit: "Pet Deposit"
+            HMS_SaleIncludes: "Sales Includes"
+            HMS_SaleOptions: "Sale Options"
+            HMS_TransactionType: "Transaction Type"
+            HMS_TypeOfManagement: "Management"
+            HMS_WarrantyDescription: "Warranty"
+            HoursDaysOfOperation: "Hours of Operation"
+            Ownership: "Ownership"
+            OwnershipType: "Ownership Type"
+        Farm:
+            HMS_Crops: "Crops"
+            Vegetation: "Vegetation"
+            HMS_SoilType: "Soil Type"
+        Land:
+            CurrentUse: "Current Use"
+            DevelopmentStatus: "Development Status"
+            HMS_ImprovementFeatures: "Improvement"
+            HMS_MineralDescription: "Mineral"
+            PossibleUse: "Possible Use"
+            Topography: "Topography"
+        Lease:
+            LeasableArea: "Leasable Area"
+            OwnerPays: "Owner Pays"
+            HMS_LeasableAreaMin: "Leasable Area"
+            HMS_LeaseOptions: "Lease Options"
+            HMS_LeasePerSqFt: "Lease per Square Foot"
+            NumberOfUnitsTotal: "Number of Units (Total)"
+            PetsAllowed: "Pets Allowed"
+            TenantPays: "Tenant Pays"
+            UnitTypeType: "Unit Type"
+        Location:
+            HMS_InFloodPlain: "Flood Plain"
+            HMS_InsideCityLimits: "Inside City Limits"
+            HMS_LocationFeatures: "Location Features"
+            MLSAreaMajor: "Major Area"
+        HOA:
+            AssociationName: "HOA"
+            AssociationFee: ["HOA Fee","USD"]
+            AssociationFeeFrequency: "HOA Fee Frequency"
+            AssociationAmenities: "HOA Amenities"
+            AssociationFeeIncludes: "HOA Fee Includes"
+        School:
+            HighSchoolDistrict: "School District"
+            ElementarySchool: "Elementary School"
+            MiddleOrJuniorSchool: "Middle School"
+            HighSchool: "High School"
+    locale: en
+    googleMapApi: AIzaSyATHv-VDsAz1ZZ5RCCNElZysF4EoVWvyes
+    quandlApi: 9LViA35WCDdw7f88AWbe
+    mlsgrid:
+        baseDir: '/home/agentjo/app/public/'
+        photoDir: "img/mlsgrid/"
+        token: ccc4723d6b0cfe5ff3671cc9cbd7f18b9a3081d3
+        url:   https://api.mlsgrid.com/
+        OriginatingSystemName: "hmls"
+        DataFields:                                    #fields to be saved to database and searchable
+            ListingKey: "matrixid"                     #gridMLS unique key -- not used by me
+            ListingId: "mlsnumber"                     #this is the unique mls key -- media linked to this field
+            ModificationTimestamp: "modtimestamp"
+            City: "city"
+            CountyOrParish: "county"
+            StateOrProvince: "state"
+            PostalCode: "zip"
+            SubdivisionName: "subdivision"
+            PropertySubType: "bookingsection"
+            BathroomsFull: "bathsfull"
+            BathroomsHalf: "bathshalf"
+            BedroomsTotal: "bedrooms"
+            ListAgentMlsId: "agentid"
+            ListOfficeMlsId: "officeid"
+            ListOfficeName: "officename"
+            ListAgentFullName: "agentname"
+            PhotosCount: "photocount"
+            PhotosChangeTimestamp: "photomodifieddate"
+            ListPrice: "listprice"
+            PublicRemarks: "comments"
+            HighSchoolDistrict: "schoolsdistrict"
+            ElementarySchool: "elementaryschool"
+            HighSchool: "highschool"
+            MiddleOrJuniorSchool: "middleschool"
+            LivingArea: "totalsqft"
+            HMS_TaxTotalAmount: "taxes"
+            StandardStatus: "standardstatus"
+            PropertyType: "propertytype"
+        propertyClass:  #DO NOT ADD ANY MORE PROPERTY CLASSES FOR NOW - Got to solve Bulk Problem first.
+            PropertyResi: "Residential"
+            PropertyComs: "Commercial"
+            PropertyLand: "Land"
+            PropertyRinc: "Multi-Family"
+        MediaFields:
+            ResourceRecordID: "resourcerecordid"
+            ModificationTimestamp: "modificationtimestamp"
+            ResourceRecordKey: "resourcerecordkey"
+            ResourceName: "resourcename"
+            MediaKey: "mediakey"
+            Order: "order"
+            ImageWidth: "imagewidth"
+            ImageHeight: "imageheight"
+            MediaURL: "mediaurl"
+            ImageSizeDescription: "imagesizedescription"
+    mortgage:
+        defaultInterestRate: 5 // % APR
+        defaultHomeInsurance: .0056
+        defaultTerms: 30 //in years
+
+knp_paginator:
+    page_range: 3                       # number of links showed in the pagination menu (e.g: you have 10 pages, a page_range of 3, on the 5th page you'll see links to page 4, 5, 6)
+    default_options:
+        page_name: page                 # page query parameter name
+        sort_field_name: modtimestamp   # sort field query parameter name
+        sort_direction_name: desc       # sort direction query parameter name
+        distinct: true                  # ensure distinct results, useful when ORM queries are using GROUP BY statements
+        filter_field_name: filterField  # filter field query parameter name
+        filter_value_name: filterValue  # filter value query parameter name
+    template:
+        pagination: 'components/pagination.html.twig'     # custom pagination based on bootstrap 5
+        sortable:   'components/sortable_link.html.twig' # custom sort link template based on bootstrap 5 icons
+        filtration: '@KnpPaginator/Pagination/filtration.html.twig'  # filters template
+
 
 services:
     # default configuration for services in *this* file

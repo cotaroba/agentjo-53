@@ -1,0 +1,102 @@
+{% set listprice = listing.mortgage.listprice | default(100000) %}
+{% set downPayment = listing.mortgage.downPayment | default(listprice * 0.2)  %}
+{% set interestRate =  listing.mortgage.interestRate | default(mortgage.defaultInterestRate) %}
+{% set annualTaxes = listing.mortgage.annualTaxes | default(listprice * 0.01) %}
+
+<!-- Modal -->
+<div class="modal" id="mortgageCalculator" tabindex="-1" role="dialog" aria-labelledby="mortgageLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mortgageLabel">Mortgage Payment Estimate</h4>
+                <button type="button" class="close" data-bs-dismiss="modal"><span aria-hidden="true"></span><span class="sr-only">Close</span></button>
+
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal form-compact" role="form" name="calc">
+                    <div class="form-group row my-0">
+                        <label for="loan" class="col-6 control-label text-sm-right">Price</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="loan"  value="{{ listprice }}" onchange='showpay()'></div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="downPayment" class="col-6 control-label text-sm-right">Down Payment</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="downPayment"  value="{{ downPayment }}" onchange='showpay()'></div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="loanAmount" class="col-6 control-label text-sm-right">Loan Amount</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="loanAmount" value="{{ listprice - downPayment }}" readonly></div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="term" class="col-6 control-label text-sm-right">Term (in Years)</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="term" value="{{ mortgage.defaultTerms }}" onchange='showpay()'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="rate" class="col-sm-6 control-label text-sm-right">Interest Rate (APR %)</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="rate" value="{{ interestRate }}" onchange='showpay()'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="tax" class="col-6 control-label text-sm-right">Property Tax (Annual)</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="tax"  value="{{ annualTaxes }}" onchange='showpay()'></div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="ins" class="col-6 control-label text-sm-right">Insurance (Annual)</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="ins"  value="{{ (listprice * mortgage.defaultHomeInsurance) }}" onchange='showpay()'></div>
+                        </div>
+                    </div>
+                    <div class="form-group row my-0">
+                        <label for="princIntr_payment" class="col-6 control-label text-sm-right">Principle & Interest (Monthly)</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="princIntr_payment" value="{{ listing.mortgage.principleInterest | default(0) }}" readonly ></div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row my-0">
+                        <label for="mortgage_payment" class="col-6 control-label text-sm-right">Total Monthly Payment</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control mortgage-payment form-control-sm" id="mortgage_payment" value="{{ listing.mortgage.monthlyPayment | default(0) }}" readonly style="background-color: #FFFFCC; font-size: 1.2em; font-weight:bold"></div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="modal-footer text-sm-left">
+                <div class="row border-row">
+                    <div class="col-12">
+                        <dl class="dl-horizontal footnote my-1">
+                            <dt>Mortgage Information Available From:</dt>
+                            <dd class="my-0"><a href="mailto:jkneib@fairwaymc.com">Jennifer Knieb</a> at <a href="https://www.fairwayindependentmc.com/Jennifer-L-Dixon" target="_blank">Fairway Mortgage</a></dd>
+                            <dd class="my-0"><a href="mailto:tsimmons@fscbank.com">Teresa Simmons</a> at <a href="https://www.fscbank.com/financing/fsb-mortgage" target="_blank">Farmers State Bank</a></dd>
+                        </dl>
+                        <hr />
+                        <p class="small"><strong>Disclaimer: </strong>The information computed on this page is for estimation purposes only. Payment amounts must be obtained from your mortgage lender. AgentJo has no liability for the accuracy of the information contained on this page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

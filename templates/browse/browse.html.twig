@@ -1,0 +1,69 @@
+{% extends 'components/layout.html.twig' %}
+{% set path = app.request.baseUrl ~ app.request.pathinfo %}
+{% set HeaderText %}Displaying All Listings<br>{% endset %}
+{% set PropertyText = "Listings" %}
+{% if pagination.getTotalItemCount == 1 %}{% set PropertyText = "Property" %}{% endif %}
+            {% set searchResultMarkup %}
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {% if app.request.pathinfo == "/search/results" %}
+                            {% if searchTerm is defined and (searchTerm != 'All Listings' and searchTerm != '') %}
+                                {% set HeaderText %}Search Results for: {{ searchTerm }}<br/>[ <a
+                                        href="{{ path('clearSearch') }}">Clear Search</a> ]{% endset %}
+                            {% else %}{% set HeaderText %}Search Results for All Listings{% endset %}
+                            {% endif %}
+                        {% endif %}
+                        {% if propertyType is defined and propertyType != '' %}
+                            {% set HeaderText %}Browsing {{ propertyType }} Listings<br>{% endset %}
+                        {% endif %}
+                        {{ HeaderText }}
+                        <div class="my-3">
+                            Found {{ pagination.getTotalItemCount|number_format(0, '.') }} {{ PropertyText }}
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="float-end">Sort Results By:
+                            <div class="text-nowrap"><span
+                                        class=" {% if pagination.isSorted("d.listprice") %}fw-bold{% endif %}">{{ knp_pagination_sortable(pagination,"Price ","d.listprice") }}</span><span
+                                        class=" ms-3 {% if pagination.isSorted("d.modtimestamp") %}fw-bold{% endif %}">{{ knp_pagination_sortable(pagination,"Updated","d.modtimestamp") }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endset %}
+
+{% block maincontent %}
+
+    {% if pagination is defined %}
+{% set lastLoop = 0 %}
+
+        <div class="container-fluid g-1">
+            {{ searchResultMarkup }}
+
+            <div class="row mt-2">
+                <div class="col">
+
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4 g-3">
+                {% for listing in pagination.items %}
+                    <div class="col">
+                        {% include 'browse/browse.listings.html.twig' %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {{ searchResultMarkup }}
+
+        </div>
+
+{% else %}
+<p>Nothing was found</p>
+{% endif %}
+{% endblock %}
+{% block footer %}
+    {% include 'components/hmls.footer.html.twig' %}
+{% endblock %}
+

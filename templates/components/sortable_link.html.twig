@@ -1,0 +1,14 @@
+<a{% for attr, value  in options %} {{ attr }}="{{ value }}"{% endfor %}>
+<span class="">
+        {% if sorted %}
+            {% if direction == 'desc' %}
+                <i class="bi bi-sort-down-alt"></i>
+            {% else %}
+                <i class="bi bi-sort-down"></i>
+            {% endif %}
+        {% else %}
+            <i class="bi bi-filter-left"></i>
+        {% endif %}
+    </span>
+{{ title }}
+</a>
